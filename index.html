@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsche Bäckerei — Sales Presentation</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--black:#080807;--dark:#111110;--card:#181715;--border:rgba(255,255,255,0.07);--gold:#C9A84C;--gold2:#e8c878;--white:#F4F0E8;--muted:#6b6860;--red:#C0392B;--green:#4CAF7D;--pretzel:#D4845A;--bread:#B89060;--cake:#A06080;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Outfit',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:60px 60px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(8,8,7,0.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--white);cursor:pointer;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:6px;align-items:center;}
+.nav-btn{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:8px 14px;cursor:pointer;border:none;background:transparent;font-family:'Outfit',sans-serif;transition:color .2s;position:relative;}
+.nav-btn:hover{color:var(--white);}
+.nav-btn.active{color:var(--gold);}
+.nav-btn.active::after{content:'';position:absolute;bottom:2px;left:14px;right:14px;height:1px;background:var(--gold);}
+.nav-cta{background:var(--gold);color:var(--black)!important;padding:8px 20px;font-weight:600;}
+.nav-cta:hover{background:var(--gold2);}
+.nav-cta.active::after{display:none;}
+.page{display:none;padding-top:64px;min-height:100vh;}
+.page.active{display:block;}
+.tag{display:inline-block;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.3);padding:5px 12px;margin-bottom:16px;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:2px;line-height:1;color:var(--white);}
+.divider{width:40px;height:2px;background:var(--gold);margin:20px 0;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s;}
+.btn-gold{background:var(--gold);color:var(--black);}.btn-gold:hover{background:var(--gold2);}
+.btn-outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2);}.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.anim{animation:fadeUp .55s ease both;}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.40s}
+.footer-strip{background:var(--dark);border-top:1px solid var(--border);padding:24px 80px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);letter-spacing:1px;flex-wrap:wrap;gap:8px;}
+.fs-brand{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--white);letter-spacing:3px;}.fs-brand span{color:var(--gold);}
+input[type=range]{width:100%;-webkit-appearance:none;height:2px;background:rgba(255,255,255,0.08);outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--gold);transform:rotate(45deg);cursor:pointer;}
+.toggle{position:relative;width:46px;height:26px;cursor:pointer;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:rgba(255,255,255,0.06);border:1px solid var(--border);transition:background .3s;}
+.toggle input:checked+.toggle-track{background:var(--gold);border-color:var(--gold);}
+.toggle-thumb{position:absolute;top:4px;left:4px;width:16px;height:16px;background:var(--white);transition:transform .3s;}
+.toggle input:checked~.toggle-thumb{transform:translateX(20px);}
+
+/* ── HOME ── */
+.hero{min-height:calc(100vh - 64px);display:grid;grid-template-columns:1fr 1fr;align-items:center;position:relative;overflow:hidden;}
+.hero-left{padding:80px 64px 80px 80px;position:relative;z-index:2;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:24px;}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold);}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,8vw,110px);line-height:.95;letter-spacing:2px;color:var(--white);margin-bottom:28px;}
+.hero-title .gold{color:var(--gold);}.hero-title .italic{font-family:'DM Serif Display',serif;font-style:italic;color:var(--gold);}
+.hero-desc{font-size:16px;color:var(--muted);line-height:1.7;max-width:420px;margin-bottom:40px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:40px;margin-top:56px;padding-top:40px;border-top:1px solid var(--border);}
+.hs-val{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1;}
+.hs-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;}
+.hero-right{height:calc(100vh - 64px);position:relative;overflow:hidden;background:var(--dark);border-left:1px solid var(--border);}
+.hero-visual{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.bakery-graphic{position:relative;width:380px;height:380px;}
+.bg-circle{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(201,168,76,0.1);animation:spin 20s linear infinite;}
+.bg-circle2{inset:30px;animation:spin 30s linear infinite reverse;}
+.center-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;animation:float 4s ease-in-out infinite;}
+.orbit-item{position:absolute;width:64px;height:64px;background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.oi-icon{font-size:22px;}.oi-label{font-size:8px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.orbit-1{top:20px;left:50%;transform:translateX(-50%);}.orbit-2{bottom:20px;left:50%;transform:translateX(-50%);}
+.orbit-3{left:10px;top:50%;transform:translateY(-50%);}.orbit-4{right:10px;top:50%;transform:translateY(-50%);}
+.data-stream{position:absolute;right:0;top:0;bottom:0;width:180px;overflow:hidden;opacity:.25;background:linear-gradient(90deg,transparent,rgba(201,168,76,.03));}
+.stream-line{font-size:10px;color:var(--gold);white-space:nowrap;padding:3px 12px;animation:streamDown 8s linear infinite;opacity:0;}
+@keyframes streamDown{0%{transform:translateY(-20px);opacity:0}10%{opacity:.7}90%{opacity:.7}100%{transform:translateY(100vh);opacity:0}}
+.stream-line:nth-child(1){animation-delay:0s}.stream-line:nth-child(2){animation-delay:1.3s}.stream-line:nth-child(3){animation-delay:2.6s}.stream-line:nth-child(4){animation-delay:3.9s}.stream-line:nth-child(5){animation-delay:5.2s}.stream-line:nth-child(6){animation-delay:6.5s}
+.about-strip{background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1100px;margin:0 auto;align-items:center;}
+.about-text{font-size:15px;color:var(--muted);line-height:1.8;margin-top:16px;}
+.about-right{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.about-card{padding:24px;background:var(--card);border:1px solid var(--border);position:relative;}
+.about-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.about-card.c1::after{background:var(--gold)}.about-card.c2::after{background:var(--pretzel)}.about-card.c3::after{background:var(--green)}.about-card.c4::after{background:var(--cake)}
+.ac-icon{font-size:28px;margin-bottom:10px;}.ac-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px;}.ac-text{font-size:11px;color:var(--muted);line-height:1.6;}
+.highlights{padding:80px;max-width:1100px;margin:0 auto;}
+.hl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+.hl-card{background:var(--card);border:1px solid var(--border);padding:32px;cursor:pointer;transition:transform .2s,border-color .2s;position:relative;overflow:hidden;}
+.hl-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.3);}
+.hl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.hl-card:hover::before{transform:scaleX(1);}
+.hl-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(201,168,76,.12);line-height:1;margin-bottom:12px;}
+.hl-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:8px;}.hl-text{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px;}.hl-link{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+
+/* ── PRODUCTS ── */
+.products-hero{padding:80px 80px 60px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
+.ph-right{font-size:12px;color:var(--muted);text-align:right;line-height:2.2;}.ph-right span{color:var(--gold);}
+.product-section{padding:0 80px 60px;}
+.product-block{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);margin-top:28px;overflow:hidden;}
+.product-block.rev{direction:rtl;}.product-block.rev>*{direction:ltr;}
+.pb-visual{background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;gap:16px;position:relative;min-height:300px;overflow:hidden;}
+.pb-bg-num{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(255,255,255,.02);line-height:1;bottom:-20px;right:-10px;pointer-events:none;}
+.pb-icon{font-size:80px;z-index:1;animation:float 5s ease-in-out infinite;}
+.pb-price-badge{background:var(--gold);color:var(--black);font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;padding:8px 20px;z-index:1;}
+.pb-info{padding:44px;background:var(--card);display:flex;flex-direction:column;justify-content:center;}
+.pb-num{font-family:'Bebas Neue',sans-serif;font-size:72px;color:rgba(255,255,255,.04);line-height:1;margin-bottom:-16px;}
+.pb-name{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;color:var(--white);line-height:1;}
+.pb-german{font-size:12px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;}
+.pb-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:24px;}
+.pb-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pb-stat{background:var(--dark);padding:14px;border-left:2px solid var(--gold);}
+.pb-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--white);}.pb-stat-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.prob-section{padding:0 80px 60px;}.prob-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--white);margin-bottom:28px;}
+.prob-bar-row{display:grid;grid-template-columns:140px 1fr 70px;align-items:center;gap:18px;margin-bottom:18px;}
+.pbl-name{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;}.pbl-track{height:8px;background:rgba(255,255,255,.06);}.pbl-fill{height:100%;}
+.pbl-pct{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--white);text-align:right;}
+.pretzel-fill{background:var(--pretzel);width:50%;}.bread-fill{background:var(--bread);width:30%;}.cake-fill{background:var(--cake);width:20%;}
+.prob-note{margin-top:22px;padding:14px 18px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);font-size:12px;color:var(--muted);line-height:1.7;}.prob-note span{color:var(--gold);}
+.price-section{padding:0 80px 80px;}
+.price-table{width:100%;border-collapse:collapse;}
+.price-table th{text-align:left;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--border);}
+.price-table td{padding:18px 16px;border-bottom:1px solid var(--border);font-size:14px;}
+.price-table tr:last-child td{border-bottom:none;}.price-table tr:hover td{background:rgba(255,255,255,.02);}
+.pt-product{display:flex;align-items:center;gap:12px;}.pt-icon{font-size:24px;}.pt-name{font-weight:600;color:var(--white);}.pt-german{font-size:11px;color:var(--muted);}
+.pt-price{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);}
+.pt-badge{display:inline-block;font-size:10px;letter-spacing:1px;padding:4px 10px;border:1px solid;}
+.pt-badge.pretzel{color:var(--pretzel);border-color:var(--pretzel);}.pt-badge.bread{color:var(--bread);border-color:var(--bread);}.pt-badge.cake{color:var(--cake);border-color:var(--cake);}
+
+/* ── STATS ── */
+.stats-hero{padding:80px 80px 60px;border-bottom:1px solid var(--border);}
+.sh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;}
+.kpi{background:var(--card);border:1px solid var(--border);padding:22px;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.kpi.k1::after{background:var(--gold)}.kpi.k2::after{background:var(--pretzel)}.kpi.k3::after{background:var(--green)}.kpi.k4::after{background:var(--cake)}
+.kpi-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.kpi-value{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;color:var(--white);}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:6px;}.kpi-delta{font-size:11px;margin-top:4px;}
+.up{color:var(--green);}
+.charts-wrap{padding:56px 80px;display:flex;flex-direction:column;gap:36px;}
+.chart-card{background:var(--card);border:1px solid var(--border);padding:28px;}
+.cc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.cc-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);}.cc-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.cc-legend{display:flex;gap:14px;flex-wrap:wrap;}.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}.legend-dot{width:8px;height:8px;border-radius:50%;}
+.chart-wrap{height:260px;position:relative;}.chart-wrap-sm{height:210px;position:relative;}.charts-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.hourly-wrap{padding:0 80px 60px;}.hourly-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:20px;}
+.h-table{width:100%;border-collapse:collapse;}
+.h-table th{text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--border);}
+.h-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;}
+.h-table tr:hover td{background:rgba(255,255,255,.02);}.h-table tr.peak td{color:var(--pretzel);}
+.mini-bar{height:3px;background:var(--gold);}.peak .mini-bar{background:var(--pretzel);}
+
+/* ── SIMULATION ── */
+.sim-hero{padding:56px 80px 44px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.sim-status{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.dot-live{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+.sim-layout{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 220px);}
+.sim-left{background:var(--dark);border-right:1px solid var(--border);padding:36px 28px;display:flex;flex-direction:column;gap:24px;}
+.ps-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.field-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block;}
+.time-input-big{background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:4px;padding:10px 16px;width:100%;outline:none;transition:border-color .2s;}
+.time-input-big:focus{border-color:var(--gold);}.time-input-big.error{border-color:var(--red);background:rgba(192,43,43,.05);}
+.error-box{display:none;background:rgba(192,43,43,.08);border:1px solid rgba(192,43,43,.3);padding:11px 13px;font-size:11px;color:var(--red);line-height:1.7;margin-top:8px;}
+.error-box.show{display:block;}
+.slider-row{display:flex;flex-direction:column;gap:8px;}.sr-header{display:flex;justify-content:space-between;}.sr-label{font-size:10px;color:var(--muted);letter-spacing:1px;}.sr-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--white);}
+.promo-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02);border:1px solid var(--border);padding:13px 15px;}
+.pr-title{font-size:12px;font-weight:500;color:var(--white);}.pr-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.promo-badge-s{display:none;font-size:9px;letter-spacing:2px;background:rgba(212,132,90,.15);border:1px solid var(--pretzel);color:var(--pretzel);text-transform:uppercase;padding:3px 8px;}
+.promo-badge-s.show{display:inline-block;}
+.ref-box{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:14px;font-size:11px;color:var(--muted);line-height:2.1;}.ref-box strong{color:var(--white);}
+.run-btn{padding:15px;width:100%;background:var(--gold);border:none;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--black);cursor:pointer;transition:background .2s,transform .1s;margin-top:auto;}
+.run-btn:hover{background:var(--gold2);}.run-btn:active{transform:scale(.99);}
+.sim-right{padding:36px 44px;display:flex;flex-direction:column;gap:20px;}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:14px;min-height:300px;}
+.es-icon{font-size:60px;opacity:.15;}.es-title{font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(255,255,255,.12);letter-spacing:2px;}.es-text{font-size:12px;line-height:1.8;max-width:280px;}
+.result-banner{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);padding:22px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.rb-left{display:flex;align-items:center;gap:18px;}.rb-time{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;}
+.rb-info-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}.rb-info-val{font-size:13px;color:var(--white);margin-bottom:8px;}
+.rb-tags{display:flex;gap:6px;}
+.tag-peak{display:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;background:rgba(212,132,90,.12);border:1px solid var(--pretzel);color:var(--pretzel);}
+.tag-promo{display:none;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;background:rgba(76,175,125,.10);border:1px solid var(--green);color:var(--green);}
+.tag-peak.show{display:inline-block;}.tag-promo.show{display:inline-block;}
+.rb-rev-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:right;}
+.rb-rev-val{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gold);line-height:1;}
+.stat-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.stat{background:var(--card);border:1px solid var(--border);padding:18px;position:relative;}
+.stat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.stat.sg::after{background:var(--gold);}.stat.sa::after{background:var(--pretzel);}.stat.ss::after{background:var(--green);}
+.stat-label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--white);line-height:1;}.stat-sub{font-size:10px;color:var(--muted);margin-top:5px;}
+.product-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.prod-card{background:var(--card);border:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:7px;}
+.prod-card.pr{border-bottom:2px solid var(--pretzel);}.prod-card.pb{border-bottom:2px solid var(--bread);}.prod-card.pk{border-bottom:2px solid var(--cake);}
+.pc-icon{font-size:26px;}.pc-name{font-weight:600;font-size:14px;color:var(--white);}.pc-prob{font-size:10px;color:var(--muted);letter-spacing:1px;}
+.pc-units{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--white);line-height:1;}.pc-rev{font-size:13px;color:var(--gold);}
+.pc-bar{height:3px;background:rgba(255,255,255,.06);margin-top:6px;}.pc-fill{height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.breakdown{background:var(--card);border:1px solid var(--border);padding:22px;}
+.bd-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--white);margin-bottom:14px;}
+.bd-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;}
+.bd-row:last-child{border-bottom:none;}.bd-row.hdr{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.bd-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.bd-total-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}.bd-total-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
+#simResults{display:none;flex-direction:column;gap:18px;}#simResults.show{display:flex;}
+
+@media(max-width:960px){
+  .hero{grid-template-columns:1fr;}.hero-right{display:none;}.hero-left{padding:48px 24px;}
+  .about-strip{padding:48px 24px;}.about-grid{grid-template-columns:1fr;gap:36px;}
+  .highlights{padding:48px 24px;}.hl-grid{grid-template-columns:1fr;}
+  .products-hero,.product-section,.prob-section,.price-section{padding-left:24px;padding-right:24px;}
+  .product-block{grid-template-columns:1fr;}.product-block.rev{direction:ltr;}
+  .stats-hero,.charts-wrap,.hourly-wrap{padding-left:24px;padding-right:24px;}
+  .sh-grid{grid-template-columns:1fr 1fr;}.charts-two{grid-template-columns:1fr;}
+  .sim-hero{padding:40px 24px 32px;}.sim-layout{grid-template-columns:1fr;}
+  .sim-left{border-right:none;border-bottom:1px solid var(--border);}
+  .sim-right{padding:28px 20px;}.stat-row3,.product-row3{grid-template-columns:1fr 1fr;}
+  .footer-strip{padding:20px 24px;}nav{padding:0 20px;}
+  .nav-btn:not(.nav-cta){display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Deutsche <span>Bäckerei</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" id="nav-home"       onclick="showPage('home')">Home</button>
+    <button class="nav-btn"        id="nav-products"   onclick="showPage('products')">Products</button>
+    <button class="nav-btn"        id="nav-stats"      onclick="showPage('stats')">Sales Stats</button>
+    <button class="nav-btn nav-cta" id="nav-simulation" onclick="showPage('simulation')">Simulation</button>
+  </div>
+</nav>
+
+<!-- PAGE 1: HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow anim d1">Sales Presentation 2025</div>
+      <h1 class="hero-title anim d2">Deutsche<br><span class="italic">Bäckerei</span><br><span class="gold">Forecast</span></h1>
+      <p class="hero-desc anim d3">A data-driven sales simulation for a modern German bakery — tracking hourly footfall, product demand, peak hours, and promotional impact.</p>
+      <div class="hero-btns anim d4">
+        <button class="btn btn-gold" onclick="showPage('simulation')">▶ Run Simulation</button>
+        <button class="btn btn-outline" onclick="showPage('stats')">View Sales Stats →</button>
+      </div>
+      <div class="hero-stats anim d5">
+        <div><div class="hs-val">3</div><div class="hs-label">Products</div></div>
+        <div><div class="hs-val">12H</div><div class="hs-label">Operating Window</div></div>
+        <div><div class="hs-val">+40%</div><div class="hs-label">Peak Hour Boost</div></div>
+        <div><div class="hs-val">50%</div><div class="hs-label">Conversion Rate</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="bakery-graphic">
+          <div class="bg-circle"></div><div class="bg-circle bg-circle2"></div>
+          <div class="center-icon">🥐</div>
+          <div class="orbit-item orbit-1"><span class="oi-icon">🥨</span><span class="oi-label">Pretzel</span></div>
+          <div class="orbit-item orbit-2"><span class="oi-icon">🎂</span><span class="oi-label">Cake</span></div>
+          <div class="orbit-item orbit-3"><span class="oi-icon">🍞</span><span class="oi-label">Bread</span></div>
+          <div class="orbit-item orbit-4"><span class="oi-icon">📊</span><span class="oi-label">Forecast</span></div>
+        </div>
+      </div>
+      <div class="data-stream">
+        <div class="stream-line">PRETZEL → $60 · 50%</div><div class="stream-line">PEAK 12:00–14:00 +40%</div>
+        <div class="stream-line">BREAD → $180 · 30%</div><div class="stream-line">FOOTFALL × 0.5 = BUYERS</div>
+        <div class="stream-line">CAKE → $220 · 20%</div><div class="stream-line">PROMO → PRETZEL 70%</div>
+      </div>
+    </div>
+  </section>
+  <section class="about-strip">
+    <div class="about-grid">
+      <div>
+        <span class="tag">About This Project</span>
+        <h2 class="section-title" style="font-size:clamp(30px,4vw,50px)">Built For<br>Real Decisions</h2>
+        <div class="divider"></div>
+        <p class="about-text">This simulation models a German bakery's hourly sales based on real business logic — footfall patterns, product purchase probabilities, peak demand windows, and promotional events.</p>
+        <button class="btn btn-gold" style="margin-top:28px" onclick="showPage('simulation')">Try the Simulator →</button>
+      </div>
+      <div class="about-right">
+        <div class="about-card c1"><div class="ac-icon">⏰</div><div class="ac-title">Time Validation</div><div class="ac-text">Only accepts entries within 08:00–20:00 operating hours.</div></div>
+        <div class="about-card c2"><div class="ac-icon">⚡</div><div class="ac-title">Peak Hours</div><div class="ac-text">12PM–2PM automatically applies a 40% footfall surge.</div></div>
+        <div class="about-card c3"><div class="ac-icon">🛒</div><div class="ac-title">Conversion Logic</div><div class="ac-text">50% of visitors purchase, 50% browse only.</div></div>
+        <div class="about-card c4"><div class="ac-icon">🎉</div><div class="ac-title">Promo Events</div><div class="ac-text">Promotional toggle shifts pretzel sales to 70%.</div></div>
+      </div>
+    </div>
+  </section>
+  <section class="highlights">
+    <span class="tag">Explore</span><h2 class="section-title">What's Inside</h2>
+    <div class="hl-grid">
+      <div class="hl-card" onclick="showPage('products')"><div class="hl-num">01</div><div class="hl-title">Product Showcase</div><div class="hl-text">Detailed breakdown of all three products with pricing, probabilities, and sales logic.</div><div class="hl-link">View Products →</div></div>
+      <div class="hl-card" onclick="showPage('stats')"><div class="hl-num">02</div><div class="hl-title">Sales Statistics</div><div class="hl-text">Visual charts showing daily revenue patterns, peak hour analysis, and projected figures.</div><div class="hl-link">View Stats →</div></div>
+      <div class="hl-card" onclick="showPage('simulation')"><div class="hl-num">03</div><div class="hl-title">Live Simulation</div><div class="hl-text">Enter a customer arrival time and instantly see the forecast for that specific hour.</div><div class="hl-link">Run Simulation →</div></div>
+    </div>
+  </section>
+  <div class="footer-strip"><div class="fs-brand">Deutsche <span>Bäckerei</span></div><div>Sales Forecast Simulation · 2025 Presentation</div><div>Open: 08:00 – 20:00 Daily</div></div>
+</div>
+
+<!-- PAGE 2: PRODUCTS -->
+<div class="page" id="page-products">
+  <div class="products-hero">
+    <div><span class="tag">Our Menu</span><h1 class="section-title">Product<br>Lineup</h1><div class="divider"></div><p style="font-size:15px;color:var(--muted);line-height:1.7;max-width:440px;">Three signature products with distinct demand patterns, price points, and customer appeal.</p></div>
+    <div class="ph-right"><div>Operating Hours <span>08:00 – 20:00</span></div><div>Conversion Rate <span>50% of visitors</span></div><div>Peak Hours <span>12:00 – 14:00 (+40%)</span></div></div>
+  </div>
+  <div class="product-section">
+    <div class="product-block">
+      <div class="pb-visual" style="border-right:1px solid var(--border)"><div class="pb-bg-num">01</div><div class="pb-icon">🥨</div><div class="pb-price-badge">$60</div></div>
+      <div class="pb-info"><div class="pb-num">01</div><div class="pb-name">PRETZEL</div><div class="pb-german">Brezel · Highest Demand</div><p class="pb-desc">The bakery's most popular item. Classic German salted pretzel with a golden crust. During promotional events, demand surges to 70% of all purchases.</p><div class="pb-stats"><div class="pb-stat"><div class="pb-stat-val">50%</div><div class="pb-stat-lbl">Normal Prob.</div></div><div class="pb-stat" style="border-left-color:var(--pretzel)"><div class="pb-stat-val">70%</div><div class="pb-stat-lbl">Promo Prob.</div></div><div class="pb-stat"><div class="pb-stat-val">$60</div><div class="pb-stat-lbl">Unit Price</div></div><div class="pb-stat"><div class="pb-stat-val">#1</div><div class="pb-stat-lbl">Best Seller</div></div></div></div>
+    </div>
+    <div class="product-block rev">
+      <div class="pb-visual" style="border-left:1px solid var(--border)"><div class="pb-bg-num">02</div><div class="pb-icon" style="animation-delay:.5s">🍞</div><div class="pb-price-badge" style="background:var(--bread)">$180</div></div>
+      <div class="pb-info"><div class="pb-num">02</div><div class="pb-name">BREAD</div><div class="pb-german">Roggenbrot · Mid-Range</div><p class="pb-desc">Hearty German rye bread, baked fresh daily. 30% of purchases, but its higher price makes it a significant revenue contributor.</p><div class="pb-stats"><div class="pb-stat" style="border-left-color:var(--bread)"><div class="pb-stat-val">30%</div><div class="pb-stat-lbl">Normal Prob.</div></div><div class="pb-stat" style="border-left-color:var(--bread)"><div class="pb-stat-val">~18%</div><div class="pb-stat-lbl">Promo Prob.</div></div><div class="pb-stat"><div class="pb-stat-val">$180</div><div class="pb-stat-lbl">Unit Price</div></div><div class="pb-stat"><div class="pb-stat-val">#2</div><div class="pb-stat-lbl">Revenue Rank</div></div></div></div>
+    </div>
+    <div class="product-block">
+      <div class="pb-visual" style="border-right:1px solid var(--border)"><div class="pb-bg-num">03</div><div class="pb-icon" style="animation-delay:1s">🎂</div><div class="pb-price-badge" style="background:var(--cake)">$220</div></div>
+      <div class="pb-info"><div class="pb-num">03</div><div class="pb-name">CAKE</div><div class="pb-german">Schwarzwälder · Premium</div><p class="pb-desc">The premium product. Black Forest cake and specialty pastries — highest single-item price in the lineup. Each sale delivers maximum per-unit revenue.</p><div class="pb-stats"><div class="pb-stat" style="border-left-color:var(--cake)"><div class="pb-stat-val">20%</div><div class="pb-stat-lbl">Normal Prob.</div></div><div class="pb-stat" style="border-left-color:var(--cake)"><div class="pb-stat-val">~12%</div><div class="pb-stat-lbl">Promo Prob.</div></div><div class="pb-stat"><div class="pb-stat-val">$220</div><div class="pb-stat-lbl">Unit Price</div></div><div class="pb-stat"><div class="pb-stat-val">#1</div><div class="pb-stat-lbl">Highest Price</div></div></div></div>
+    </div>
+  </div>
+  <div class="prob-section">
+    <h2 class="prob-title">Purchase Probability Comparison</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px">
+      <div><div style="font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:18px">Normal Day</div>
+        <div class="prob-bar-row"><div class="pbl-name">🥨 Pretzel</div><div class="pbl-track"><div class="pbl-fill pretzel-fill"></div></div><div class="pbl-pct" style="color:var(--pretzel)">50%</div></div>
+        <div class="prob-bar-row"><div class="pbl-name">🍞 Bread</div><div class="pbl-track"><div class="pbl-fill bread-fill"></div></div><div class="pbl-pct" style="color:var(--bread)">30%</div></div>
+        <div class="prob-bar-row"><div class="pbl-name">🎂 Cake</div><div class="pbl-track"><div class="pbl-fill cake-fill"></div></div><div class="pbl-pct" style="color:var(--cake)">20%</div></div>
+      </div>
+      <div><div style="font-size:10px;letter-spacing:3px;color:var(--pretzel);text-transform:uppercase;margin-bottom:18px">🎉 Promotional Event</div>
+        <div class="prob-bar-row"><div class="pbl-name">🥨 Pretzel</div><div class="pbl-track"><div class="pbl-fill pretzel-fill" style="width:70%"></div></div><div class="pbl-pct" style="color:var(--pretzel)">70%</div></div>
+        <div class="prob-bar-row"><div class="pbl-name">🍞 Bread</div><div class="pbl-track"><div class="pbl-fill bread-fill" style="width:18%"></div></div><div class="pbl-pct" style="color:var(--bread)">18%</div></div>
+        <div class="prob-bar-row"><div class="pbl-name">🎂 Cake</div><div class="pbl-track"><div class="pbl-fill cake-fill" style="width:12%"></div></div><div class="pbl-pct" style="color:var(--cake)">12%</div></div>
+      </div>
+    </div>
+    <div class="prob-note"><span>Note:</span> Probabilities apply to the purchasing 50% of visitors only. During promotional events, pretzel demand rises to 70% and remainder is redistributed between bread (~18%) and cake (~12%).</div>
+  </div>
+  <div class="price-section">
+    <h2 class="prob-title">Pricing Overview</h2>
+    <table class="price-table">
+      <thead><tr><th>Product</th><th>Unit Price</th><th>Normal Demand</th><th>Promo Demand</th><th>Category</th></tr></thead>
+      <tbody>
+        <tr><td><div class="pt-product"><span class="pt-icon">🥨</span><div><div class="pt-name">Pretzel</div><div class="pt-german">Brezel</div></div></div></td><td><span class="pt-price">$60</span></td><td>50% of buyers</td><td style="color:var(--pretzel)">70% of buyers</td><td><span class="pt-badge pretzel">Best Seller</span></td></tr>
+        <tr><td><div class="pt-product"><span class="pt-icon">🍞</span><div><div class="pt-name">Bread</div><div class="pt-german">Roggenbrot</div></div></div></td><td><span class="pt-price" style="color:var(--bread)">$180</span></td><td>30% of buyers</td><td style="color:var(--muted)">~18% of buyers</td><td><span class="pt-badge bread">Mid-Range</span></td></tr>
+        <tr><td><div class="pt-product"><span class="pt-icon">🎂</span><div><div class="pt-name">Cake</div><div class="pt-german">Schwarzwälder</div></div></div></td><td><span class="pt-price" style="color:var(--cake)">$220</span></td><td>20% of buyers</td><td style="color:var(--muted)">~12% of buyers</td><td><span class="pt-badge cake">Premium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footer-strip"><div class="fs-brand">Deutsche <span>Bäckerei</span></div><div>Sales Forecast Simulation · 2025 Presentation</div><div>Open: 08:00 – 20:00 Daily</div></div>
+</div>
+
+<!-- PAGE 3: STATS -->
+<div class="page" id="page-stats">
+  <div class="stats-hero">
+    <span class="tag">Analytics</span><h1 class="section-title">Sales<br>Statistics</h1><div class="divider"></div>
+    <p style="font-size:15px;color:var(--muted);line-height:1.7;max-width:500px">Projected revenue, hourly patterns, and product performance — based on 30 base customers/hour.</p>
+    <div class="sh-grid">
+      <div class="kpi k1"><div class="kpi-label">Est. Daily Revenue</div><div class="kpi-value">$9,840</div><div class="kpi-sub">at 30 customers/hr</div><div class="kpi-delta up">↑ incl. peak hours</div></div>
+      <div class="kpi k2"><div class="kpi-label">Peak Hour Revenue</div><div class="kpi-value">$1,176</div><div class="kpi-sub">12:00–13:00 window</div><div class="kpi-delta up">⚡ +40% footfall</div></div>
+      <div class="kpi k3"><div class="kpi-label">Avg. Buyers / Hour</div><div class="kpi-value">15</div><div class="kpi-sub">50% of 30 visitors</div><div class="kpi-delta" style="color:var(--muted)">21 during peak</div></div>
+      <div class="kpi k4"><div class="kpi-label">Est. Monthly Revenue</div><div class="kpi-value">$295K</div><div class="kpi-sub">30-day projection</div><div class="kpi-delta up">↑ steady growth</div></div>
+    </div>
+  </div>
+  <div class="charts-wrap">
+    <div class="chart-card">
+      <div class="cc-header"><div><div class="cc-title">Hourly Revenue Breakdown</div><div class="cc-sub">All 12 operating hours · Peak window in amber</div></div><div class="cc-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Normal</div><div class="legend-item"><div class="legend-dot" style="background:var(--pretzel)"></div>Peak</div></div></div>
+      <div class="chart-wrap"><canvas id="hourlyChart"></canvas></div>
+    </div>
+    <div class="charts-two">
+      <div class="chart-card"><div class="cc-header"><div><div class="cc-title">Product Revenue Share</div><div class="cc-sub">Normal day · by product</div></div></div><div class="chart-wrap-sm"><canvas id="donutChart"></canvas></div></div>
+      <div class="chart-card"><div class="cc-header"><div><div class="cc-title">Normal vs Promo Day</div><div class="cc-sub">Per-product revenue comparison</div></div></div><div class="chart-wrap-sm"><canvas id="compareChart"></canvas></div></div>
+    </div>
+    <div class="chart-card">
+      <div class="cc-header"><div><div class="cc-title">Hourly Visitor Pattern</div><div class="cc-sub">Footfall vs Buyers across operating hours</div></div><div class="cc-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Visitors</div><div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Buyers</div></div></div>
+      <div class="chart-wrap"><canvas id="footfallChart"></canvas></div>
+    </div>
+  </div>
+  <div class="hourly-wrap"><div class="hourly-title">Hour-by-Hour Reference Table</div><div id="hourlyTableWrap"></div></div>
+  <div class="footer-strip"><div class="fs-brand">Deutsche <span>Bäckerei</span></div><div>Sales Forecast Simulation · 2025 Presentation</div><div>Open: 08:00 – 20:00 Daily</div></div>
+</div>
+
+<!-- PAGE 4: SIMULATION -->
+<div class="page" id="page-simulation">
+  <div class="sim-hero">
+    <div><span class="tag">Live Tool</span><h1 class="section-title" style="font-size:clamp(34px,5vw,60px)">Sales<br>Simulation</h1></div>
+    <div class="sim-status"><div class="dot-live"></div>Enter customer arrival time to forecast that hour</div>
+  </div>
+  <div class="sim-layout">
+    <div class="sim-left">
+      <div>
+        <div class="ps-title">Customer Entry Time</div>
+        <span class="field-label" style="margin-top:12px">Arrival Time (08:00 – 20:00)</span>
+        <input type="time" id="arrivalTime" class="time-input-big" value="10:00">
+        <div class="error-box" id="errorBox">⚠ Wrong input — The bakery is open from 8:00 AM to 8:00 PM only.<br>Please enter a time between 08:00 and 19:59.</div>
+      </div>
+      <div>
+        <div class="ps-title">Parameters</div>
+        <div class="slider-row" style="margin-top:12px"><div class="sr-header"><span class="sr-label">Base Footfall (customers/hr)</span><span class="sr-val" id="footfallVal">30</span></div><input type="range" id="footfall" min="5" max="100" step="1" value="30"></div>
+      </div>
+      <div>
+        <div class="ps-title">Promotional Event</div>
+        <div class="promo-row" style="margin-top:12px">
+          <div><div class="pr-title">Enable Promotion</div><div class="pr-sub">Pretzel probability → 70%</div></div>
+          <div style="display:flex;align-items:center;gap:10px"><span class="promo-badge-s" id="promoBadgeS">ON</span><label class="toggle"><input type="checkbox" id="promoToggle"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+        </div>
+      </div>
+      <div class="ref-box"><strong>Rules:</strong><br>🕗 Open 08:00 – 20:00 only<br>⚡ 12:00–14:00 → +40% footfall<br>🛒 50% visitors buy · 50% browse<br>🥨 Pretzel 50% · 🍞 Bread 30% · 🎂 Cake 20%</div>
+      <button class="run-btn" onclick="runSim()">▶ FORECAST THIS HOUR</button>
+    </div>
+    <div class="sim-right">
+      <div class="empty-state" id="emptyState"><div class="es-icon">🕐</div><div class="es-title">Awaiting Entry</div><div class="es-text">Enter a customer arrival time and click "Forecast This Hour" to see the sales breakdown.</div></div>
+      <div id="simResults">
+        <div class="result-banner">
+          <div class="rb-left"><div class="rb-time" id="rbTime">--:--</div><div><div class="rb-info-label">Customer Arrived</div><div class="rb-info-val" id="rbWindow">—</div><div class="rb-tags"><span class="tag-peak" id="tagPeak">⚡ Peak Hour</span><span class="tag-promo" id="tagPromo">🎉 Promo Active</span></div></div></div>
+          <div><div class="rb-rev-label">Hour Revenue</div><div class="rb-rev-val" id="rbRev">$0</div></div>
+        </div>
+        <div class="stat-row3">
+          <div class="stat sg"><div class="stat-label">Visitors This Hour</div><div class="stat-value" id="sVis">0</div><div class="stat-sub" id="sVisSub">—</div></div>
+          <div class="stat sa"><div class="stat-label">Buying Customers</div><div class="stat-value" id="sBuy">0</div><div class="stat-sub">50% of visitors</div></div>
+          <div class="stat ss"><div class="stat-label">Browsing Only</div><div class="stat-value" id="sBrowse">0</div><div class="stat-sub">no purchase</div></div>
+        </div>
+        <div class="product-row3" id="productRow3"></div>
+        <div class="breakdown">
+          <div class="bd-title">Sales Breakdown</div>
+          <div class="bd-row hdr"><span>Product</span><span>Prob.</span><span>Units</span><span>Price</span><span>Revenue</span></div>
+          <div id="bdRows"></div>
+          <div class="bd-total"><span class="bd-total-label">Total Revenue This Hour</span><span class="bd-total-val" id="bdTotal">$0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-strip"><div class="fs-brand">Deutsche <span>Bäckerei</span></div><div>Sales Forecast Simulation · 2025 Presentation</div><div>Open: 08:00 – 20:00 Daily</div></div>
+</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────
+let statsBuilt=false;
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='stats'&&!statsBuilt){buildCharts();statsBuilt=true;}
+}
+
+// ── STATS DATA ───────────────────────────────────
+const HOURS=['08','09','10','11','12','13','14','15','16','17','18','19'];
+const PRICES=[60,180,220];
+const PROBS_N=[0.5,0.3,0.2];
+const PROBS_P=[0.7,0.18,0.12];
+function computeHour(h,promo=false){
+  const isPeak=(h>=12&&h<14);
+  const ff=Math.round(30*(isPeak?1.4:1.0));
+  const buyers=Math.round(ff*0.5);
+  const probs=promo?PROBS_P:PROBS_N;
+  const units=probs.map(p=>Math.round(buyers*p));
+  const revs=units.map((u,i)=>u*PRICES[i]);
+  return{isPeak,footfall:ff,buyers,units,revs,total:revs.reduce((a,b)=>a+b,0)};
+}
+const hData=HOURS.map(h=>computeHour(parseInt(h)));
+const hDataP=HOURS.map(h=>computeHour(parseInt(h),true));
+
+const cDef={
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#6b6860',font:{family:'Outfit',size:11},boxWidth:10}},tooltip:{backgroundColor:'#181715',borderColor:'rgba(201,168,76,.2)',borderWidth:1,titleColor:'#F4F0E8',bodyColor:'#6b6860',titleFont:{family:'Outfit',size:12,weight:'600'},bodyFont:{family:'Outfit',size:11}}},
+  scales:{x:{ticks:{color:'#4a4840',font:{family:'Outfit',size:10}},grid:{color:'rgba(255,255,255,.03)'}},y:{ticks:{color:'#4a4840',font:{family:'Outfit',size:10}},grid:{color:'rgba(255,255,255,.04)'}}}
+};
+
+function buildCharts(){
+  new Chart(document.getElementById('hourlyChart'),{type:'bar',data:{labels:HOURS.map(h=>h+':00'),datasets:[{label:'Revenue',data:hData.map(d=>d.total),backgroundColor:hData.map(d=>d.isPeak?'rgba(212,132,90,.75)':'rgba(201,168,76,.55)'),borderColor:hData.map(d=>d.isPeak?'#D4845A':'#C9A84C'),borderWidth:1}]},options:{...cDef,plugins:{...cDef.plugins,legend:{display:false}},scales:{...cDef.scales,y:{...cDef.scales.y,ticks:{...cDef.scales.y.ticks,callback:v=>'$'+v}}}}});
+  const tRevs=[0,1,2].map(i=>hData.reduce((a,d)=>a+d.revs[i],0));
+  new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['🥨 Pretzel','🍞 Bread','🎂 Cake'],datasets:[{data:tRevs,backgroundColor:['rgba(212,132,90,.8)','rgba(184,144,96,.8)','rgba(160,96,128,.8)'],borderColor:['#D4845A','#B89060','#A06080'],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#6b6860',font:{family:'Outfit',size:11},boxWidth:10}},tooltip:{...cDef.plugins.tooltip,callbacks:{label:c=>' $'+Math.round(c.raw).toLocaleString()}}}}});
+  const nRevs=[0,1,2].map(i=>hData.reduce((a,d)=>a+d.revs[i],0));
+  const pRevs=[0,1,2].map(i=>hDataP.reduce((a,d)=>a+d.revs[i],0));
+  new Chart(document.getElementById('compareChart'),{type:'bar',data:{labels:['🥨 Pretzel','🍞 Bread','🎂 Cake'],datasets:[{label:'Normal Day',data:nRevs,backgroundColor:'rgba(201,168,76,.5)',borderColor:'#C9A84C',borderWidth:1},{label:'Promo Day',data:pRevs,backgroundColor:'rgba(212,132,90,.5)',borderColor:'#D4845A',borderWidth:1}]},options:{...cDef,scales:{...cDef.scales,y:{...cDef.scales.y,ticks:{...cDef.scales.y.ticks,callback:v=>'$'+v}}}}});
+  new Chart(document.getElementById('footfallChart'),{type:'line',data:{labels:HOURS.map(h=>h+':00'),datasets:[{label:'Visitors',data:hData.map(d=>d.footfall),borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.08)',pointBackgroundColor:'#C9A84C',pointRadius:4,tension:.4,fill:true},{label:'Buyers (50%)',data:hData.map(d=>d.buyers),borderColor:'#4CAF7D',backgroundColor:'rgba(76,175,125,.06)',pointBackgroundColor:'#4CAF7D',pointRadius:4,tension:.4,fill:true,borderDash:[4,4]}]},options:cDef});
+  const maxT=Math.max(...hData.map(d=>d.total));
+  document.getElementById('hourlyTableWrap').innerHTML=`<table class="h-table"><thead><tr><th>Hour</th><th>Visitors</th><th>Buyers</th><th>🥨</th><th>🍞</th><th>🎂</th><th>Revenue</th><th style="width:120px"></th></tr></thead><tbody>${hData.map((d,i)=>`<tr class="${d.isPeak?'peak':''}"><td>${HOURS[i]}:00${d.isPeak?' ⚡':''}</td><td>${d.footfall}</td><td>${d.buyers}</td><td>${d.units[0]}</td><td>${d.units[1]}</td><td>${d.units[2]}</td><td>$${d.total.toLocaleString()}</td><td><div style="height:3px;background:rgba(255,255,255,.05)"><div class="mini-bar${d.isPeak?' peak':''}" style="width:${(d.total/maxT*100).toFixed(1)}%"></div></div></td></tr>`).join('')}</tbody></table>`;
+}
+
+// ── SIMULATION ───────────────────────────────────
+const SPRODS=[
+  {key:'pr',icon:'🥨',name:'Pretzel',price:60, np:.50,pp:.70,color:'var(--pretzel)'},
+  {key:'pb',icon:'🍞',name:'Bread',  price:180,np:.30,pp:.18,color:'var(--bread)'},
+  {key:'pk',icon:'🎂',name:'Cake',   price:220,np:.20,pp:.12,color:'var(--cake)'},
+];
+document.getElementById('footfall').addEventListener('input',function(){document.getElementById('footfallVal').textContent=this.value;});
+document.getElementById('promoToggle').addEventListener('change',function(){document.getElementById('promoBadgeS').classList.toggle('show',this.checked);});
+document.getElementById('arrivalTime').addEventListener('keydown',e=>{if(e.key==='Enter')runSim();});
+
+function fmt(n){return'$'+Math.round(n).toLocaleString();}
+
+function runSim(){
+  const ts=document.getElementById('arrivalTime').value;
+  const errEl=document.getElementById('errorBox');
+  const inpEl=document.getElementById('arrivalTime');
+  if(!ts){errEl.classList.add('show');inpEl.classList.add('error');return;}
+  const[h,m]=ts.split(':').map(Number);
+  const tH=h+m/60;
+  if(tH<8||tH>=20){
+    errEl.classList.add('show');inpEl.classList.add('error');
+    document.getElementById('simResults').classList.remove('show');
+    document.getElementById('emptyState').style.display='flex';
+    return;
+  }
+  errEl.classList.remove('show');inpEl.classList.remove('error');
+  const baseFF=parseInt(document.getElementById('footfall').value);
+  const isPromo=document.getElementById('promoToggle').checked;
+  const isPeak=(tH>=12&&tH<14);
+  const ff=Math.round(baseFF*(isPeak?1.4:1.0));
+  const buyers=Math.round(ff*0.5);
+  const browsers=ff-buyers;
+  const probs=isPromo?SPRODS.map(p=>p.pp):SPRODS.map(p=>p.np);
+  const units=probs.map(p=>Math.round(buyers*p));
+  const revs=units.map((u,i)=>u*SPRODS[i].price);
+  const total=revs.reduce((a,b)=>a+b,0);
+  const nextH=Math.min(h+1,20);
+  const win=`${ts} – ${String(nextH).padStart(2,'0')}:${String(m).padStart(2,'0')} window`;
+  document.getElementById('rbTime').textContent=ts;
+  document.getElementById('rbWindow').textContent=win;
+  document.getElementById('rbRev').textContent=fmt(total);
+  document.getElementById('tagPeak').classList.toggle('show',isPeak);
+  document.getElementById('tagPromo').classList.toggle('show',isPromo);
+  document.getElementById('sVis').textContent=ff;
+  document.getElementById('sVisSub').textContent=isPeak?'⚡ +40% peak boost':'standard hour';
+  document.getElementById('sBuy').textContent=buyers;
+  document.getElementById('sBrowse').textContent=browsers;
+  const maxRev=Math.max(...revs);
+  document.getElementById('productRow3').innerHTML=SPRODS.map((p,i)=>`<div class="prod-card ${p.key}"><div class="pc-icon">${p.icon}</div><div class="pc-name">${p.name}</div><div class="pc-prob">${Math.round(probs[i]*100)}% · $${p.price}/unit</div><div class="pc-units">${units[i]}</div><div class="pc-rev">${fmt(revs[i])}</div><div class="pc-bar"><div class="pc-fill" style="width:${(revs[i]/maxRev*100).toFixed(1)}%;background:${p.color}"></div></div></div>`).join('');
+  document.getElementById('bdRows').innerHTML=SPRODS.map((p,i)=>`<div class="bd-row"><span style="color:${p.color}">${p.icon} ${p.name}</span><span>${Math.round(probs[i]*100)}%</span><span>${units[i]}</span><span style="color:var(--muted)">$${p.price}</span><span>${fmt(revs[i])}</span></div>`).join('');
+  document.getElementById('bdTotal').textContent=fmt(total);
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('simResults').classList.add('show');
+}
+</script>
+</body>
+</html>
